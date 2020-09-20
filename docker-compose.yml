@@ -1,0 +1,23 @@
+version: '3.7'
+services:
+
+  ui:
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    ports:
+      - 3000:3000
+    restart: on-failure
+    volumes:
+      - ./src:/app/src:delegated
+      - ./public:/app/public:delegated
+    logging:
+      options:
+        max-size: 10m
+    stdin_open: true
+
+networks:
+  public:
+  private:
+    driver: bridge
+    internal: true

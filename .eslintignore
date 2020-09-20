@@ -1,0 +1,10 @@
+node_modules/
+coverage/
+build/
+out/
+.next/
+docs/
+package-lock.json
+serviceWorker.js
+src/*.test.js
+src/*.css
