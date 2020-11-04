@@ -9,8 +9,8 @@ services:
       - 3000:3000
     restart: on-failure
     volumes:
-      - ./src:/app/src:delegated
-      - ./public:/app/public:delegated
+      - ./src:/app/src:consistent
+      - ./public:/app/public:consistent
     logging:
       options:
         max-size: 10m
