@@ -1,7 +1,6 @@
-# node-app-ui
+# telegram-bot-dashboard
 
 # Description
-A starter UI made with React, Material UI or CSS Framework, and more...
+A starter for Telegram Bot Patient Dashboard with charting.
 
-## Typscript
-- For the use of Typescript use this [branch](https://github.com/rvansant2/node-app-ui/tree/typescript)
+
