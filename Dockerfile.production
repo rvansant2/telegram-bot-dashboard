@@ -1,0 +1,24 @@
+FROM node:lts as builder
+
+RUN mkdir -p /transpile
+WORKDIR /transpile
+
+COPY ./.eslintrc ./.prettierrc ./package*.json ./
+COPY ./.env.example ./.env
+COPY ./config ./config
+COPY ./src ./src
+COPY ./public ./public
+
+RUN npm install && npm run build
+
+FROM node:lts
+
+RUN npm install -g serve && mkdir -p /ui
+COPY --from=builder /transpile/build /ui/
+WORKDIR /ui
+COPY ./package*.json ./
+COPY ./config ./config
+COPY ./.env.example ./.env
+RUN npm install --only=production
+RUN ls -al
+CMD serve -s .
