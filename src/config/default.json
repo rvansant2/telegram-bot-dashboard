@@ -1,0 +1,10 @@
+{
+  "application": {
+    "botAPIHost": {
+      "baseURL": "https://peaceful-hollows-36115.herokuapp.com",
+      "port": "",
+      "dashboardEndpoint": "patients",
+      "patientId": "2755394"
+    }
+  }
+}

@@ -6,3 +6,4 @@ out/
 docs/
 package-lock.json
 serviceWorker.js
+src/config/*.json
