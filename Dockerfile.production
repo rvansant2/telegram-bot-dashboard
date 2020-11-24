@@ -5,7 +5,6 @@ WORKDIR /transpile
 
 COPY ./.eslintrc ./.prettierrc ./package*.json ./
 COPY ./.env.example ./.env
-COPY ./config ./config
 COPY ./src ./src
 COPY ./public ./public
 
@@ -17,7 +16,6 @@ RUN npm install -g serve && mkdir -p /ui
 COPY --from=builder /transpile/build /ui/
 WORKDIR /ui
 COPY ./package*.json ./
-COPY ./config ./config
 COPY ./.env.example ./.env
 RUN npm install --only=production
 RUN ls -al
