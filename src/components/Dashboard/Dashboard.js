@@ -3,21 +3,33 @@ import { Line } from 'react-chartjs-2';
 import get from 'lodash/get';
 import moment from 'moment';
 
-import { getGlucoseAPIURL } from '../../lib/utils';
+import { getGlucoseAPIURL, getTrendingGlucose } from '../../lib/utils';
 import { getGlucoseData } from '../../lib/api/axiosFetchHandler';
 
 const Dashboard = () => {
   const [glucoseData, setGlucoseData] = useState('');
   const [glucoseLabels, setGlucoseLabels] = useState('');
+  const [trendingGlucoseData, setTrendingGlucoseData] = useState('');
+  const [trendingGlucoseDataLabels, setTrendingGlucoseDataLabels] = useState('');
 
   const fetchGlucoseData = useCallback(async () => {
+    const trendingGlucoseLabels = [];
     const glucoseDataFetchUrl = getGlucoseAPIURL();
     const resp = await getGlucoseData(glucoseDataFetchUrl);
     const patientGlucoseReadings = get(resp, 'data.user.glucose', []);
     const glucoseValues = patientGlucoseReadings.map(({ glucose }) => glucose);
     const glucoseLabelValues = patientGlucoseReadings.map(({ createdAt }) => moment(createdAt).format('MMM Do YY, h:mm:ss a'));
+    const trendingGlucoseLabelStartDate = Date(glucoseLabelValues[0]).toString();
+    const trendingGlucoseLabelEndDate = Date(glucoseLabelValues[glucoseLabelValues.length - 1]).toString();
+    const trendingGlucose = getTrendingGlucose(glucoseValues);
+
+    // Todo: fix date bug
+    trendingGlucoseLabels.push(moment(trendingGlucoseLabelStartDate).format('MMM Do YY'));
+    trendingGlucoseLabels.push(moment(trendingGlucoseLabelEndDate).format('MMM Do YY'));
+    setTrendingGlucoseData(trendingGlucose);
     setGlucoseData(glucoseValues);
     setGlucoseLabels(glucoseLabelValues);
+    setTrendingGlucoseDataLabels(trendingGlucoseLabels);
   }, []);
 
   useEffect(() => {
@@ -34,12 +46,18 @@ const Dashboard = () => {
         backgroundColor: 'rgba(75,192,192,0.2)',
         borderColor: 'rgba(75,192,192,1)',
       },
-      // {
-      //   label: 'Avg. Blood glucose (2 hrs. after food)',
-      //   data: [133, 125, 135, 151, 154, 176],
-      //   fill: false,
-      //   borderColor: '#742774',
-      // },
+    ],
+  };
+
+  const data2 = {
+    labels: trendingGlucoseDataLabels,
+    datasets: [
+      {
+        label: 'Trending Avg. Blood glucose',
+        data: trendingGlucoseData,
+        fill: false,
+        borderColor: '#742774',
+      },
     ],
   };
 
@@ -69,10 +87,31 @@ const Dashboard = () => {
     },
   };
 
+  const options2 = {
+    title: {
+      display: true,
+      text: 'Trending Average Blood Glucose Dashboard',
+    },
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            suggestedMin: 0,
+            suggestedMax: 100,
+          },
+        },
+      ],
+    },
+  };
+
   return (
     <div>
-      {/* {JSON.stringify(glucoseLabels)} */}
-      <Line data={data} legend={legend} options={options} />
+      <div>
+        <Line data={data} legend={legend} options={options} />
+      </div>
+      <div>
+        <Line data={data2} legend={legend} options={options2} />
+      </div>
     </div>
   );
 };
